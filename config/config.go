@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"time"
 )
@@ -19,7 +20,8 @@ var (
 	AppSecret string
 )
 
-func init() {
+func InitBase() {
 	AppID = os.Getenv("APPID")
 	AppSecret = os.Getenv("APPSECRET")
+	log.Printf("getting env. appID=%s, appSecret=%s\n", AppID, AppSecret)
 }

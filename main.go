@@ -10,6 +10,7 @@ import (
 
 func main() {
 	// config init
+	config.InitBase()
 	config.InitRedis()
 	service.DoTemplate()
 
