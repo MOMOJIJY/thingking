@@ -5,5 +5,6 @@ Thinking 是一个微信公众号后台的学习项目。
 ## 部署
 1. 安装docker
 2. 运行 `sudo service docker start`
+3. 修改 docker-compose.yaml 文件中的`APPID`和`APPSECRET`
 3. 运行 `sudo docker compose -f docker-compose.yaml up -d`
 4. 访问 `127.0.0.1:8080`
