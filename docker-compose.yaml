@@ -10,7 +10,7 @@ services:
     restart: always
 
   goweb:
-    image: wechat-dev:1.0
+    image: momojijy/wechat-thinking:1.0
     restart: always
     ports:
       - 8080:8080
