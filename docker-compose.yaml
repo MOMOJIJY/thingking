@@ -18,3 +18,4 @@ services:
       REDIS-HOST: redis
       APPID: 1
       APPSECRET: 2
+      BGKEY: 3

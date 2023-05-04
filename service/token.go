@@ -7,11 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"wechat-dev/thinking/config"
 	"wechat-dev/thinking/models"
 
+	"github.com/kpango/glg"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -53,31 +53,31 @@ func (t *TokenService) realGetAccessToken() (models.AccessToken, error) {
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		log.Printf("New Request error. err=%v\n", err)
+		glg.Errorf("New Request error. err=%v\n", err)
 		return accessToken, err
 	}
 
 	rsp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Printf("Do http request error. err=%v\n", err)
+		glg.Errorf("Do http request error. err=%v\n", err)
 		return accessToken, err
 	}
 	defer rsp.Body.Close()
 
 	if rsp.StatusCode != http.StatusOK {
-		log.Printf("code is not equal 200. err=%v\n", err)
+		glg.Errorf("code is not equal 200. err=%v\n", err)
 		return accessToken, err
 	}
 
 	body, err := io.ReadAll(rsp.Body)
 	if err != nil {
-		log.Printf("read body error. err=%v\n", err)
+		glg.Errorf("read body error. err=%v\n", err)
 		return accessToken, err
 	}
 
 	err = json.Unmarshal(body, &accessToken)
 	if err != nil {
-		log.Printf("json unmarshal error. err=%v\n", err)
+		glg.Errorf("json unmarshal error. err=%v\n", err)
 		return accessToken, err
 	}
 

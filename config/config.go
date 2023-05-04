@@ -1,9 +1,10 @@
 package config
 
 import (
-	"log"
 	"os"
 	"time"
+
+	"github.com/kpango/glg"
 )
 
 const (
@@ -12,16 +13,18 @@ const (
 	// redis key
 	RedisMemberKey   = "member"
 	RedisTokenKey    = "access_token"
-	RedisTokenExpire = 90 * time.Minute
+	RedisTokenExpire = 60 * time.Minute
 )
 
 var (
-	AppID     string
-	AppSecret string
+	AppID          string
+	AppSecret      string
+	ChangeBgApiKey string
 )
 
 func InitBase() {
 	AppID = os.Getenv("APPID")
 	AppSecret = os.Getenv("APPSECRET")
-	log.Printf("getting env. appID=%s, appSecret=%s\n", AppID, AppSecret)
+	ChangeBgApiKey = os.Getenv("BGKEY")
+	glg.Infof("getting env. appID=%s, appSecret=%s, bg_key=%s\n", AppID, AppSecret, ChangeBgApiKey)
 }
