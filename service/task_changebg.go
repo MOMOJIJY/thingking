@@ -110,22 +110,24 @@ func (c *ChangeBGTask) start(ctx *gin.Context, req models.RequestRawMessage) err
 	}
 
 	go func() {
-		imgBytes, err := c.changeBG(ctx, req.PicURL)
+		subCtx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+		defer cancel()
+		imgBytes, err := c.changeBG(subCtx, req.PicURL)
 		if err != nil {
-			setCacheTask(ctx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
+			setCacheTask(subCtx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
 			glg.Error("change bg error", err, req)
 			return
 		}
 		filePath := fmt.Sprintf("./static/%s_%d.jpg", req.FromUserName, req.MsgID)
 		err = utils.SaveImg(imgBytes, filePath)
 		if err != nil {
-			setCacheTask(ctx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
+			setCacheTask(subCtx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
 			glg.Error("save img error", err, req)
 			return
 		}
-		rsp, err := c.ElemService.Upload(ctx, filePath)
+		rsp, err := c.ElemService.Upload(subCtx, filePath)
 		if err != nil {
-			setCacheTask(ctx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
+			setCacheTask(subCtx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
 			glg.Error("upload img error", err, req)
 			return
 		}
@@ -133,9 +135,9 @@ func (c *ChangeBGTask) start(ctx *gin.Context, req models.RequestRawMessage) err
 		if err != nil {
 			glg.Error("del img error", err, req)
 		}
-		err = setCacheTask(ctx, req.FromUserName, c.Name(), rsp.MediaID, changeBgExpire)
+		err = setCacheTask(subCtx, req.FromUserName, c.Name(), rsp.MediaID, changeBgExpire)
 		if err != nil {
-			setCacheTask(ctx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
+			setCacheTask(subCtx, req.FromUserName, c.Name(), changeBgStateFail, changeBgExpire)
 			glg.Error("set task done error", err, req, rsp)
 			return
 		}
